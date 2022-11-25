@@ -1,176 +1,127 @@
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 public class Membership {
-
-    //Attributter-----------------
+    //—————————————————————————————————————————————————— Variables ———————————————————————————————————————————————————
     private String firstName;
-
     private String surname;
-
-    private int age;
-
     private String birtInput;
-
     private String inputLine;
-
+    private int age;
     private int input;
+    private static int nextMember = 1;
+    private int memberNumber;
+    private int price;
 
-    private String userInput;
-
-    private static int nextmemeber = 1;
-
-    private int membernumber;
-
-    //construtur-----------------
-
+    //—————————————————————————————————————————————————— Constructur ———————————————————————————————————————————————————
     public Membership() {
-        membernumber = nextmemeber++;
+        memberNumber = nextMember++;
     }
+    //——————————————————————————————————————————————————  Arraylist ————————————————————————————————————————————————————
+    private ArrayList <String> member = new ArrayList<>();
 
-    //Arraylist----------------
-
-    private ArrayList <String> memeber = new ArrayList();
-
-    //Scanner----------------
+    //——————————————————————————————————————————————————  Scanner & instance ————————————————————————————————————————————————————
+    SwimmingDisciplines swimmingDisciplines = new SwimmingDisciplines();
     Scanner sc = new Scanner(System.in);
 
+    //——————————————————————————————————————————————————  Getter ——————————————————————————————————————————————————————
 
-    //getter -----------------
-
-    public String getSurname() {
-        return surname;
+    // getter
+    public int getMemberNumber() {
+        return memberNumber;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getInputLine() {
+        return inputLine;
     }
 
-    public int getAge() {
-        return age;
-    }
-    public int getMembernumber () {
-        return membernumber;
+    public int getPrice () {
+        return price;
     }
 
 
-    //setter -----------------
-    public void setSurname() {
-        this.surname = surname;
+    //——————————————————————————————————————————————————  Setter ——————————————————————————————————————————————————————
+
+    public void setOverAgePrice (int overAgePrice) {
+        this.price = overAgePrice;
     }
 
-    public void setFirstName() {
-        this.firstName = firstName;
-    }
+    //——————————————————————————————————————————————————  Methodes ————————————————————————————————————————————————————
 
-    public void setAge() {
-        this.age = age;
-    }
 
-    //MainMetoder -----------------
-
-    public void membershipInformation() {
+    public void CreatMember() {
         System.out.println("What is your first name ?");
         firstName = sc.nextLine();
         System.out.println("What is your surname ?");
         surname = sc.nextLine();
-        activeOrPaasivMememeber();
-    }
-
-    //subMetoder -----------------
-
-    public void membersBirth() {
         System.out.println("Enter your date of birth in the following format 'YYYY-MM-DD':");
         birtInput = sc.nextLine();
+        activeOrPassiveMember();
     }
 
-    public void calculatingAge() {
+    public void activeOrPassiveMember () {
+        System.out.println("Do you want a active or passive membership? ");
+        inputLine = sc.nextLine();
+        member.add(inputLine + "Member");
+
+        if (inputLine.equals("passive".toLowerCase())) {
+            setOverAgePrice(500);
+            System.out.println("Price: " + (getPrice()));
+
+        } else if (inputLine.equals("active".toLowerCase())) {
+            exerciserOrCompetitionSwimmer();
+            swimmingDisciplines.ChooseASwimmingDisciplin();
+        }
+    }
+    public int getAge(){
+        return age;
+    }
+
+    public int age () {
+        LocalDate birth = LocalDate.parse(birtInput);
+        LocalDate presentDate = LocalDate.now();
+        System.out.println(Period.between(birth, presentDate).getYears());
+        return age;
+    }
+
+    public int calculatingAge() {
         try {
             LocalDate birth = LocalDate.parse(birtInput);
             LocalDate presentDate = LocalDate.now();
-
             if (Period.between(birth, presentDate).getYears() < 18 ) {
-                System.out.println("Beacuse you are under 18, so you will be set on the junior team");
+                setOverAgePrice(1600);
+                System.out.println(" You will be set on the junior team\nPrice junior team : " + (getPrice())+ " yeary");
             }
             else if (Period.between(birth, presentDate).getYears() >= 18) {
-                System.out.println("Beacuse you are 18 or above so you will be set on the senior team");
+                setOverAgePrice(1000);
+                System.out.println("You will be set on the senior team\nPrice senior team : " +(getPrice())+ " yeary" );
             }
+            else if  (Period.between(birth, presentDate).getYears() >= 60 )  {
+                setOverAgePrice(1200);
+                System.out.println("You are 18 you will be set on the senior team \nPrice senior team : " + (getPrice()) + "(25% of the senori price) ");
+                }
+
         } catch (Exception e) {
-            System.err.println("something went wrong");
+            System.err.println("Something went wrong");
         }
+        return age;
     }
 
-    //TODO:FÅ DEN TIL A KØRER ELLERS RIGTIG!
-    public void activeOrPaasivMememeber () {
-        System.out.println("Do you want a active or passiv memebership?");
-        System.out.print("Enter : ");
-        inputLine = sc.nextLine();
-        memeber.add(inputLine + "Member");
-
-        if (inputLine.equals("passiv".toLowerCase())) {
-            membersBirth();
-            System.out.println("Your memebership is set to a passiv memebership from " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:ss" + " ") ) + "Your memeber number is " + getMembernumber());
-        } else if  (inputLine.equals("active".toLowerCase())) {
-            System.out.println("Your memebership is now ready and is a active memebership from following date: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:ss" + " ")) + "Your memeber number is " + getMembernumber());
-            membersBirth();
-            exerciserOrCompetitionSwimmer();
-        }
-    }
     public void exerciserOrCompetitionSwimmer() {
-        System.out.println("Do you want to be registred as a competition swimmer or exerciser");
-        System.out.println("Chooose '1' (competition swimmer) \nChooose '2' (exerciser) ");
+        System.out.println("Swimming form ");
+        System.out.println("Choose 1 (competition swimmer) \nChooose 2 (exerciser)");
+        System.out.print("Enter:");
         input = sc.nextInt();
         if (input == 1)  {
-           System.out.println("You are now registred as a competition swimmer");
-           calculatingAge();
+            calculatingAge();
         }
         else if (input == 2) {
-            System.out.println("You are now registred as a exerciser");
+            System.out.println("You are now registered as a exerciser");
+            //TODO:calulating pricee
         }
     }
 
-    public void changeMembership () {
-        System.out.println("You want to change your membership");
-        System.out.println("write your memebership ID: ");
-        userInput = sc.nextLine();
-        if (userInput.equals(membernumber)) {
-            memeber.remove(inputLine);
-            changeOutcome();
-        }
-    }
-
-    public void changeOutcome() {
-        if (userInput.equals("active".toLowerCase())) {
-            System.out.println("Your membership is change to a passiv memebership");
-            inputLine = "Passiv Memeber";
-            memeber.add(inputLine);
-        } else if (userInput.equals("passiv".toLowerCase())) {
-            System.out.println("Your membership is change to a active memebership");
-            inputLine = "active memeber";
-            memeber.add("active memeber");
-
-        }
-    }
-    public void deleteMemebership () {
-        try {
-            System.out.println(" Write the number for the line you want to delete");
-            input = sc.nextInt();
-            if (input == membernumber ) {
-                memeber.remove(input);
-                System.out.println(input + " is not a member from" +  LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:ss" + " ")));
-            }
-
-        }catch (Exception e) {
-            System.out.println("Something went wrong while deleting a member");
-        }
-    }
 
 }
-
-
-
-
 
